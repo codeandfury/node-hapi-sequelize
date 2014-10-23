@@ -1,6 +1,6 @@
 {
   "name": "hapi-sequelize",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "HAPI Plugin for Sequelize",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/codeandfury/node-hapi-sequelize/issues"
   },
-  "homepage": "https://github.com/codeandfury/node-hapi-sequelize"
+  "homepage": "https://github.com/codeandfury/node-hapi-sequelize",
+  "dependencies": {
+    "sequelize": "^2.0.0-rc2"
+  }
 }
