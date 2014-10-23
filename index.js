@@ -1,14 +1,26 @@
 var path      = require('path'),
-    Sequelize = require('sequelize');
+    Sequelize = require('sequelize'),
+    config    = {
+            database: 'myDatabase',
+            username: null,
+            password: null,
+            url: 'mysql://localhost',
+            port: 3306,
+            dialect: 'mysql',
+            models: './models'
+        };
 
 exports.register = function (plugin, options, next) {
-    options.url = options.url || 'mysql://localhost';
-    options.port = options.port || 3306;
-    options.dialect = options.dialect || 'mysql';
+    
+    Object.keys(options).forEach(function(k) {
+        if (config[k] !== undefined) {
+            config[k] = options[k];
+        }
+    });
 
-    var sequelize = new Sequelize(options.database, options.username, options.password, {
-        dialect: options.dialect,
-        port: options.port
+    var sequelize = new Sequelize(config.database, config.username, config.password, {
+        dialect: config.dialect,
+        port: config.port
     });
 
     sequelize
@@ -18,8 +30,8 @@ exports.register = function (plugin, options, next) {
                 plugin.log(['hapi-sequelize', 'error'], 'Error connecting to database. ' + err);
                 return next(err);
             }
-            if (options.models) {
-                var models = require(path.resolve(options.models));
+            if (config.models) {
+                var models = require(path.resolve(config.models));
                 models.sequelize.sync().complete(function(err) {
                     if (!!err) {
                         plugin.log(['hapi-sequelize', 'error'], 'Error syncing models. ' + err);
