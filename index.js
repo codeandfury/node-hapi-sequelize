@@ -9,7 +9,8 @@ var fs        = require('fs'),
             port: 3306,
             dialect: 'mysql',
             models: './models',
-            logging: false
+            logging: false,
+            native: false
         };
 
 exports.register = function (plugin, options, next) {
@@ -25,7 +26,8 @@ exports.register = function (plugin, options, next) {
             dialect: config.dialect,
             port: config.port,
             host: config.host,
-            logging: config.logging
+            logging: config.logging,
+            native: config.native
         });
 
     sequelize
