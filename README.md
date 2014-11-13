@@ -15,13 +15,16 @@ In your server init file, add the following code after you have created the `ser
     server.pack.register({
         plugin: require('hapi-sequelize'),
         options: {
+            associationFile: 'associations.js',
             database: 'myDatabase',
             username: null,
             password: null,
-            url: 'mysql://localhost',
+            host: 'localhost',
             port: 3306,
             dialect: 'mysql',
-            models: './models'
+            models: './models',
+            logging: false,
+            native: false
         }
     }, function(err) {
         if (err) {

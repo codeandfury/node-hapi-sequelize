@@ -2,6 +2,7 @@ var fs        = require('fs'),
     path      = require('path'),
     Sequelize = require('sequelize'),
     config    = {
+            associationFile: 'associations.js',
             database: 'myDatabase',
             username: null,
             password: null,
@@ -41,9 +42,35 @@ exports.register = function (plugin, options, next) {
             if (config.models) {
                 config.models = path.resolve(config.models);
                 fs.readdirSync(config.models).forEach(function(file) {
-                    models[file.substr(0, file.indexOf('.'))] = 
-                        sequelize.import(path.join(config.models, file));
+                    if (file.toLowerCase() !== config.associationFile) {
+                        models[file.substr(0, file.indexOf('.'))] = 
+                            sequelize.import(path.join(config.models, file));
+                    }
                 });
+                if (fs.existsSync(path.join(config.models, config.associationFile))) {
+                    var associations = require(path.join(config.models, config.associationFile)),
+                        assoc = null;
+
+                    for (var i = 0, length = associations.length; i < length; i ++) {
+                        assoc = associations[i];
+                        if (models[assoc.source] && models[assoc.target]) {
+                            switch (assoc.type) {
+                                case 'oneone':
+                                    models[assoc.source].hasOne(models[assoc.target]);
+                                    models[assoc.target].belongsTo(models[assoc.source]);
+                                    break;
+                                case 'onemany':
+                                    models[assoc.source].hasMany(models[assoc.target]);
+                                    models[assoc.target].belongsTo(models[assoc.source]);
+                                    break;
+                                case 'manymany':
+                                    models[assoc.source].hasMany(models[assoc.target]);
+                                    models[assoc.target].hasMany(models[assoc.source]);
+                                    break;
+                            }
+                        }
+                    }
+                }
                 sequelize.sync();
             }
             plugin.expose('sequelize', sequelize);
