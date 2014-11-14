@@ -11,7 +11,8 @@ var fs        = require('fs'),
             dialect: 'mysql',
             models: './models',
             logging: false,
-            native: false
+            native: false,
+            force: false
         };
 
 exports.register = function (plugin, options, next) {
@@ -54,24 +55,29 @@ exports.register = function (plugin, options, next) {
                     for (var i = 0, length = associations.length; i < length; i ++) {
                         assoc = associations[i];
                         if (models[assoc.source] && models[assoc.target]) {
+                            assoc.options = assoc.options || {};
+                            if (assoc.options.through && assoc.options.through.model) {
+                                assoc.options.through.model = models[assoc.options.through.model];
+                            }
+
                             switch (assoc.type) {
                                 case 'oneone':
-                                    models[assoc.source].hasOne(models[assoc.target]);
-                                    models[assoc.target].belongsTo(models[assoc.source]);
+                                    models[assoc.source].hasOne(models[assoc.target], assoc.options);
+                                    models[assoc.target].belongsTo(models[assoc.source], assoc.options);
                                     break;
                                 case 'onemany':
-                                    models[assoc.source].hasMany(models[assoc.target]);
-                                    models[assoc.target].belongsTo(models[assoc.source]);
+                                    models[assoc.source].hasMany(models[assoc.target], assoc.options);
+                                    models[assoc.target].belongsTo(models[assoc.source], assoc.options);
                                     break;
                                 case 'manymany':
-                                    models[assoc.source].hasMany(models[assoc.target]);
-                                    models[assoc.target].hasMany(models[assoc.source]);
+                                    models[assoc.source].hasMany(models[assoc.target], assoc.options);
+                                    models[assoc.target].hasMany(models[assoc.source], assoc.options);
                                     break;
                             }
                         }
                     }
                 }
-                sequelize.sync();
+                sequelize.sync({ force: config.force });
             }
             plugin.expose('sequelize', sequelize);
             plugin.expose('models', models);
