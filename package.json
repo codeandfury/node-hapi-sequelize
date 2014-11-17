@@ -1,6 +1,6 @@
 {
   "name": "hapi-sequelize",
-  "version": "0.0.71",
+  "version": "0.0.72",
   "description": "HAPI Plugin for Sequelize",
   "main": "index.js",
   "scripts": {
