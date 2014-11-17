@@ -45,8 +45,8 @@ exports.register = function (plugin, options, next) {
                 fs.readdirSync(config.models).forEach(function(file) {
                     if (file !== config.associationFile) {
                         return next(path.join(config.models, file));
-                        models[file.substr(0, file.indexOf('.'))] = 
-                            sequelize.import(path.join(config.models, file));
+                        //models[file.substr(0, file.indexOf('.'))] = 
+                        //    sequelize.import(path.join(config.models, file));
                     }
                 });
 
