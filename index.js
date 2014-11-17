@@ -2,7 +2,7 @@ var fs        = require('fs'),
     path      = require('path'),
     Sequelize = require('sequelize'),
     config    = {
-            associationFile: 'associations.js',
+            associationFile: null,
             database: 'myDatabase',
             username: null,
             password: null,
@@ -43,12 +43,13 @@ exports.register = function (plugin, options, next) {
             if (config.models) {
                 config.models = path.resolve(config.models);
                 fs.readdirSync(config.models).forEach(function(file) {
-                    if (file.toLowerCase() !== config.associationFile) {
+                    if (file !== config.associationFile) {
                         models[file.substr(0, file.indexOf('.'))] = 
                             sequelize.import(path.join(config.models, file));
                     }
                 });
-                if (fs.existsSync(path.join(config.models, config.associationFile))) {
+
+                if (config.associationFile && fs.existsSync(path.join(config.models, config.associationFile))) {
                     var associations = require(path.join(config.models, config.associationFile)),
                         assoc = null;
 
@@ -77,13 +78,20 @@ exports.register = function (plugin, options, next) {
                         }
                     }
                 }
-                sequelize.sync({ force: config.force });
-            }
-            plugin.expose('sequelize', sequelize);
-            plugin.expose('models', models);
-            plugin.log(['hapi-sequelize', 'info'], 'Sequelize connection created');
+                sequelize.sync({ force: config.force }).done(function() {
+                    plugin.expose('sequelize', sequelize);
+                    plugin.expose('models', models);
+                    plugin.log(['hapi-sequelize', 'info'], 'Sequelize connection created');
 
-            next();
+                    next();
+                });
+            } else {
+                plugin.expose('sequelize', sequelize);
+                plugin.expose('models', models);
+                plugin.log(['hapi-sequelize', 'info'], 'Sequelize connection created');
+
+                next();
+            }
         });
 };
 
