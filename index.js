@@ -42,6 +42,7 @@ exports.register = function (plugin, options, next) {
             
             if (config.models) {
                 config.models = path.resolve(config.models);
+                console.log(config.models);
                 fs.readdirSync(config.models).forEach(function(file) {
                     if (file !== config.associationFile) {
                         console.log(path.join(config.models, file));
