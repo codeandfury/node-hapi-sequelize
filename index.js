@@ -79,14 +79,14 @@ exports.register = function (plugin, options, next) {
                     }
                 }
                 sequelize.sync({ force: config.force }).done(function() {
-                    plugin.expose('sequelize', sequelize);
+                    plugin.expose('db', sequelize);
                     plugin.expose('models', models);
                     plugin.log(['hapi-sequelize', 'info'], 'Sequelize connection created');
 
                     next();
                 });
             } else {
-                plugin.expose('sequelize', sequelize);
+                plugin.expose('db', sequelize);
                 plugin.expose('models', models);
                 plugin.log(['hapi-sequelize', 'info'], 'Sequelize connection created');
 

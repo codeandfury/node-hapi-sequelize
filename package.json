@@ -1,11 +1,15 @@
 {
   "name": "hapi-sequelize",
-  "version": "0.1.0",
+  "version": "0.0.9",
   "description": "HAPI Plugin for Sequelize",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "sequelize",
+    "hapi"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/codeandfury/node-hapi-sequelize"
@@ -15,10 +19,5 @@
   "bugs": {
     "url": "https://github.com/codeandfury/node-hapi-sequelize/issues"
   },
-  "homepage": "https://github.com/codeandfury/node-hapi-sequelize",
-  "dependencies": {
-    "mysql": "^2.5.3",
-    "pg": "^3.6.3",
-    "sequelize": "^2.0.0-rc2"
-  }
+  "homepage": "https://github.com/codeandfury/node-hapi-sequelize"
 }

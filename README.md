@@ -34,10 +34,39 @@ In your server init file, add the following code after you have created the `ser
 
 ## Usage
 
-Your request object should now be decorated with the sequelize property. It will contain the sequelize connection, and models (if provided)
+Your request object should now be decorated with sequelize properties, containing the sequelize connection and models (if provided)
 
     function incomingRequest(request, reply) {
-        var sequelize = request.server.plugins['hapi-sequelize'].sequelize;
+        var sequelize = request.server.plugins['hapi-sequelize'].db; // Sequelize Database connection
+        var models = request.server.plugins['hapi-sequelize'].models; // Sequelize Models
         // TODO: Add your code
         reply();
     }
+
+Defining your models are done as follows. Models should each be in separate files.
+
+    (function() {
+        module.exports = function(sequelize, DataTypes) {
+            return sequelize.define('user', {
+                id: {
+                    primaryKey: true,
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4
+                },
+                name: {
+                    type: DataTypes.STRING,
+                }
+            });
+        };
+    })();
+
+Associations between models can be done by creating an associations.js file inside of the models folder. You can still pass Sequelize options to your associations [Documentation](http://sequelizejs.com/docs/latest/associations#one-to-one)
+
+    (function() {
+        module.exports = [{
+            source: 'user', // Filename of first model
+            target: 'address', // Filename of second model
+            type: 'oneone', // Available options: ['oneone', 'onemany', 'manymany']
+            options: {}
+        }];
+    })();
