@@ -12,7 +12,8 @@ var fs        = require('fs'),
             models: './models',
             logging: false,
             native: false,
-            force: false
+            force: false,
+            dialectOptions: {}
         };
 
 exports.register = function (plugin, options, next) {
@@ -22,14 +23,14 @@ exports.register = function (plugin, options, next) {
             config[k] = options[k];
         }
     });
-
     var models = {},
         sequelize = new Sequelize(config.database, config.username, config.password, {
             dialect: config.dialect,
             port: config.port,
             host: config.host,
             logging: config.logging,
-            native: config.native
+            native: config.native,
+            dialectOptions: config.dialectOptions
         });
 
     sequelize
