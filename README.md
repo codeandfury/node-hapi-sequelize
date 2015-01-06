@@ -24,7 +24,8 @@ In your server init file, add the following code after you have created the `ser
             dialect: 'mysql',
             models: './models',
             logging: false,
-            native: false
+            native: false,
+            dialectOptions: {}
         }
     }, function(err) {
         if (err) {
