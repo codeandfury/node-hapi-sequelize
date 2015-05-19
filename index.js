@@ -35,7 +35,7 @@ exports.register = function (plugin, options, next) {
 
     sequelize
         .authenticate()
-        .complete(function(err) {
+        .then(function(err) {
             if (!!err) {
                 plugin.log(['hapi-sequelize', 'error'], 'Error connecting to database. ' + err);
                 return next(err);
