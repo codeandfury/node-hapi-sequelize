@@ -1,6 +1,6 @@
 # hapi-sequelize
 
-This is a plugin for [HAPI](http://hapijs.com/) v6 or 7 to connect to a database using [Sequelize](http://sequelizejs.com/). 
+This is a plugin for [HAPI](http://hapijs.com/) v9 to connect to a database using [Sequelize](http://sequelizejs.com/) v3.
 
 ## Install
 
@@ -12,8 +12,8 @@ You can add the module to your HAPI project using npm:
 
 In your server init file, add the following code after you have created the `server` object (provided options are plugin defaults):
 
-    server.pack.register({
-        plugin: require('hapi-sequelize'),
+    server.register({
+        register: require('hapi-sequelize'),
         options: {
             associationFile: 'associations.js',
             database: 'myDatabase',
@@ -30,7 +30,13 @@ In your server init file, add the following code after you have created the `ser
     }, function(err) {
         if (err) {
             server.log('hapi-sequelize error: ' + err);
+            throw err;
         }
+
+        // start the server after the plugins have loaded
+        server.start(function() {
+            console.log('Server running at:', server.info.uri);
+        });
     });
 
 ## Usage
